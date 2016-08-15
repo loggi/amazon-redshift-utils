@@ -208,6 +208,7 @@ def main(args):
     print "Exporting from Source"
     src_conn = conn_to_rs(src_host, src_port, src_db, src_user,
                           src_pwd) 
+    print dataStagingRegion
     unload_data(src_conn, s3_access_key, s3_secret_key,
                 master_symmetric_key, dataStagingPath,
                 dataStagingRegion, src_schema, src_table) 
