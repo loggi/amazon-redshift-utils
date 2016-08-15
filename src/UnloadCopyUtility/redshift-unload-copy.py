@@ -70,6 +70,9 @@ def conn_to_rs(host, port, db, usr, pwd, opt=options, timeout=set_timeout_stmt):
 
 
 def unload_data(conn, aws_access_key_id, aws_secret_key, master_symmetric_key, dataStagingPath, schema_name, table_name):
+    global unload_stmt
+    if dataStagingRegion != None:
+        unload_stmt = unload_stmt + ("\nREGION '%s'" % (dataStagingRegion))
     print "Exporting %s.%s to %s" % (schema_name, table_name, dataStagingPath)
     conn.query(unload_stmt % (schema_name, table_name, dataStagingPath, aws_access_key_id,
                               aws_secret_key, master_symmetric_key))
