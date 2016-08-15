@@ -28,6 +28,7 @@ import boto
 from boto import kms, s3
 import datetime
 
+dataStagingRegion = None
 kmsClient = None
 s3Client = None
 nowString = None
@@ -161,7 +162,7 @@ def main(args):
         print "s3Staging.path must be a path to S3"
         sys.exit(-1)
         
-    dataStagingRegion = None
+    global dataStagingRegion
     if 'region' in config["s3Staging"]:
         dataStagingRegion = config["s3Staging"]['region']
         
