@@ -28,6 +28,7 @@ import boto
 from boto import kms, s3
 import datetime
 
+dataStagingRegion = None
 kmsClient = None
 s3Client = None
 nowString = None
@@ -69,10 +70,10 @@ def conn_to_rs(host, port, db, usr, pwd, opt=options, timeout=set_timeout_stmt):
     return rs_conn
 
 
-def unload_data(conn, aws_access_key_id, aws_secret_key, master_symmetric_key, dataStagingPath, dataRegion, schema_name, table_name):
+def unload_data(conn, aws_access_key_id, aws_secret_key, master_symmetric_key, dataStagingPath, dataStagingRegion, schema_name, table_name):
     global unload_stmt
-    if dataRegion != None:
-        unload_stmt = unload_stmt + ("\nREGION '%s'" % (dataRegion))
+    if dataStagingRegion != None:
+        unload_stmt = unload_stmt + ("\nREGION '%s'" % (dataStagingRegion))
     print "Exporting %s.%s to %s" % (schema_name, table_name, dataStagingPath)
     conn.query(unload_stmt % (schema_name, table_name, dataStagingPath, aws_access_key_id,
                               aws_secret_key, master_symmetric_key))
@@ -208,10 +209,10 @@ def main(args):
     print "Exporting from Source"
     src_conn = conn_to_rs(src_host, src_port, src_db, src_user,
                           src_pwd) 
-    dataRegion = dataStagingRegion
+
     unload_data(src_conn, s3_access_key, s3_secret_key,
                 master_symmetric_key, dataStagingPath,
-                dataRegion, src_schema, src_table) 
+                dataStagingRegion, src_schema, src_table) 
 
     print "Importing to Target"
     dest_conn = conn_to_rs(dest_host, dest_port, dest_db, dest_user,
