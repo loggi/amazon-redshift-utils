@@ -73,7 +73,7 @@ upsert_stmt = ("INSERT INTO amplitude ("
                "event_properties,user_properties,region,city,dma,device_family,device_type,platform,uuid,paying,start_version,user_creation_time,"
                "library,idfa,adid "
                "FROM amplitude_stg "
-               "WHERE amplitude.amplitude_id not in (SELECT amplitude_id FROM amplitude)")
+               "WHERE amplitude_stg.amplitude_id not in (SELECT amplitude_id FROM amplitude)")
 
 
 def conn_to_rs(host, port, db, usr, pwd, opt=options, timeout=set_timeout_stmt):
