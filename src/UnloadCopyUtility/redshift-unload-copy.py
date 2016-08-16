@@ -54,12 +54,12 @@ unload_stmt = """unload ('SELECT * FROM %s.%s')
 copy_stmt = """create table amplitude_stg AS (SELECT * FROM amplitude WHERE amplitude_id = 0);
                copy %s.%s
                from '%smanifest' credentials
+               region '%s'
                'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s'
                manifest
                encrypted
                gzip
                delimiter '^' removequotes escape
-               REGION '%s';
                INSERT INTO amplitude (
                 app,amplitude_id,device_id,user_id,event_time,client_event_time,client_upload_time,server_upload_time,event_id,session_id,
                 event_type,amplitude_event_type,first_event,version_name,os_name,os_version,device_brand,device_manufacturer,device_model,
@@ -100,8 +100,8 @@ def copy_data(conn, aws_access_key_id, aws_secret_key, master_symmetric_key, dat
     #    copy_stmt = copy_stmt + ("\nREGION '%s'" % (dataStagingRegion))
 
     print "Importing %s.%s from %s" % (schema_name, table_name, dataStagingPath + (":%s" % (dataStagingRegion) if dataStagingRegion != None else ""))
-    conn.query(copy_stmt % (schema_name, table_name, dataStagingPath, aws_access_key_id, aws_secret_key,
-                            master_symmetric_key, dataStagingRegion))
+    conn.query(copy_stmt % (schema_name, table_name, dataStagingRegion, dataStagingPath, aws_access_key_id, aws_secret_key,
+                            master_symmetric_key))
 
 
 def decrypt(b64EncodedValue):
