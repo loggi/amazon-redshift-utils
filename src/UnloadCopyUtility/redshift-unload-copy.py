@@ -98,7 +98,7 @@ def copy_data(conn, aws_access_key_id, aws_secret_key, master_symmetric_key, dat
 
     print "Importing %s.%s from %s" % (schema_name, table_name, dataStagingPath + (":%s" % (dataStagingRegion) if dataStagingRegion != None else ""))
     conn.query("create table amplitude_stg as (select * from amplitude where amplitude_id = 0)")
-    conn.query(copy_stmt % (schema_name, table_name, dataStagingPath, dataStagingRegion, aws_access_key_id, aws_secret_key, master_symmetric_key))
+    conn.query(copy_stmt % (schema_name, table_name, dataStagingPath, aws_access_key_id, aws_secret_key, master_symmetric_key))
     conn.query(upsert_stmt)
     conn.query("drop table amplitude_stg")
 
