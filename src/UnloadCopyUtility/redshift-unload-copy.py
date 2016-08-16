@@ -53,7 +53,7 @@ unload_stmt = """unload ('SELECT * FROM %s.%s')
 
 create_stg_stmt = "create table amplitude_stg AS (SELECT * FROM amplitude WHERE amplitude_id = 0)"
 
-copy_stmt = """copy %s.%s
+copy_stmt = """copy '%s.%s'
                from '%smanifest' credentials
                region '%s'
                'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s'
