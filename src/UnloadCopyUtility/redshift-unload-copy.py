@@ -237,8 +237,9 @@ def main(args):
     src_conn.close()
     dest_conn.close()
 
-    if deleteOnSuccess:
-        s3Delete(dataStagingPath)
+    # I dont want to delete the files
+    # if deleteOnSuccess:
+    #    s3Delete(dataStagingPath)
 
 
 if __name__ == "__main__":
