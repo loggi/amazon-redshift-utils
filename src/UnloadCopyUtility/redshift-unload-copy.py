@@ -49,9 +49,9 @@ unload_stmt = """unload ('SELECT * FROM %s.%s')
                  manifest
                  encrypted
                  gzip
-                 delimiter '^' addquotes escape allowoverwrite"""
+                 delimiter '^' addquotes escape allowoverwrite;"""
 
-create_stg_stmt = "create table amplitude_stg AS (SELECT * FROM amplitude WHERE amplitude_id = 0)"
+create_stg_stmt = "create table amplitude_stg AS (SELECT * FROM amplitude WHERE amplitude_id = 0);"
 
 copy_stmt = """copy '%s.%s'
                from '%smanifest' credentials
@@ -60,7 +60,7 @@ copy_stmt = """copy '%s.%s'
                manifest
                encrypted
                gzip
-               delimiter '^' removequotes escape"""
+               delimiter '^' removequotes escape;"""
 
 upsert_stmt = """INSERT INTO amplitude (
                  app,amplitude_id,device_id,user_id,event_time,client_event_time,client_upload_time,server_upload_time,event_id,session_id,
@@ -76,7 +76,7 @@ upsert_stmt = """INSERT INTO amplitude (
                      event_properties,user_properties,region,city,dma,device_family,device_type,platform,uuid,paying,start_version,user_creation_time,
                      library,idfa,adid
                  FROM amplitude_stg
-                 WHERE amplitude.amplitude_id not in (SELECT amplitude_id FROM amplitude)"""
+                 WHERE amplitude.amplitude_id not in (SELECT amplitude_id FROM amplitude);"""
 
 drop_stg_stmt = "DROP TABLE amplitude_stg"
 
