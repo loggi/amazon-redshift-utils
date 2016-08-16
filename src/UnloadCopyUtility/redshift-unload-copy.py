@@ -58,7 +58,8 @@ copy_stmt = """create table amplitude_stg AS (SELECT * FROM amplitude WHERE ampl
                manifest
                encrypted
                gzip
-               delimiter '^' removequotes escape;
+               delimiter '^' removequotes escape
+               REGION '%s';
                INSERT INTO amplitude (
                 app,amplitude_id,device_id,user_id,event_time,client_event_time,client_upload_time,server_upload_time,event_id,session_id,
                 event_type,amplitude_event_type,first_event,version_name,os_name,os_version,device_brand,device_manufacturer,device_model,
@@ -66,16 +67,16 @@ copy_stmt = """create table amplitude_stg AS (SELECT * FROM amplitude WHERE ampl
                 event_properties,user_properties,region,city,dma,device_family,device_type,platform,uuid,paying,start_version,user_creation_time,
                 library,idfa,adid
                 )
-            SELECT DISTINCT
-                app,amplitude_id,device_id,user_id,event_time,client_event_time,client_upload_time,server_upload_time,event_id,session_id,
-                event_type,amplitude_event_type,first_event,version_name,os_name,os_version,device_brand,device_manufacturer,device_model,
-                device_carrier,country,language,revenue,product_id,merged_amplitude_id,quantity,price,location_lat,location_lng,ip_address,
-                event_properties,user_properties,region,city,dma,device_family,device_type,platform,uuid,paying,start_version,user_creation_time,
-                library,idfa,adid
-            FROM amplitude_stg
-            WHERE amplitude.amplitude_id not in (SELECT amplitude_id FROM amplitude);
+                SELECT DISTINCT
+                    app,amplitude_id,device_id,user_id,event_time,client_event_time,client_upload_time,server_upload_time,event_id,session_id,
+                    event_type,amplitude_event_type,first_event,version_name,os_name,os_version,device_brand,device_manufacturer,device_model,
+                    device_carrier,country,language,revenue,product_id,merged_amplitude_id,quantity,price,location_lat,location_lng,ip_address,
+                    event_properties,user_properties,region,city,dma,device_family,device_type,platform,uuid,paying,start_version,user_creation_time,
+                    library,idfa,adid
+                FROM amplitude_stg
+                WHERE amplitude.amplitude_id not in (SELECT amplitude_id FROM amplitude);
 
-            DROP TABLE amplitude_stg;"""
+                DROP TABLE amplitude_stg;"""
 
 
 def conn_to_rs(host, port, db, usr, pwd, opt=options, timeout=set_timeout_stmt):
@@ -95,12 +96,12 @@ def unload_data(conn, aws_access_key_id, aws_secret_key, master_symmetric_key, d
 
 def copy_data(conn, aws_access_key_id, aws_secret_key, master_symmetric_key, dataStagingPath, dataStagingRegion, schema_name, table_name):
     global copy_stmt
-    if dataStagingRegion != None:
-        copy_stmt = copy_stmt + ("\nREGION '%s'" % (dataStagingRegion))
+    #if dataStagingRegion != None:
+    #    copy_stmt = copy_stmt + ("\nREGION '%s'" % (dataStagingRegion))
 
     print "Importing %s.%s from %s" % (schema_name, table_name, dataStagingPath + (":%s" % (dataStagingRegion) if dataStagingRegion != None else ""))
     conn.query(copy_stmt % (schema_name, table_name, dataStagingPath, aws_access_key_id, aws_secret_key,
-                            master_symmetric_key))
+                            master_symmetric_key, dataStagingRegion))
 
 
 def decrypt(b64EncodedValue):
