@@ -53,7 +53,6 @@ unload_stmt = """unload ('SELECT * FROM %s.%s')
 
 copy_stmt = """copy %s.%s
                from '%smanifest' credentials
-               region '%s'
                'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s'
                manifest
                encrypted
@@ -94,8 +93,8 @@ def unload_data(conn, aws_access_key_id, aws_secret_key, master_symmetric_key, d
 
 def copy_data(conn, aws_access_key_id, aws_secret_key, master_symmetric_key, dataStagingPath, dataStagingRegion, schema_name, table_name):
     global copy_stmt
-    #if dataStagingRegion != None:
-    #    copy_stmt = copy_stmt + ("\nREGION '%s'" % (dataStagingRegion))
+    if dataStagingRegion != None:
+        copy_stmt = copy_stmt + ("\nREGION '%s'" % (dataStagingRegion))
 
     print "Importing %s.%s from %s" % (schema_name, table_name, dataStagingPath + (":%s" % (dataStagingRegion) if dataStagingRegion != None else ""))
     conn.query("create table amplitude_stg as (select * from amplitude where amplitude_id = 0)")
