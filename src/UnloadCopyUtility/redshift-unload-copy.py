@@ -43,24 +43,24 @@ options = """keepalives=1 keepalives_idle=200 keepalives_interval=200
 
 set_timeout_stmt = "set statement_timeout = 1200000"
 
-unload_stmt = ("unload ('SELECT * FROM %s.%s') "
-               "to '%s' credentials "
-               "'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s "
-               "manifest "
-               "encrypted "
-               "gzip "
-               "delimiter '^' addquotes escape allowoverwrite ")
+unload_stmt = """unload ('SELECT * FROM %s.%s')
+                 to '%s' credentials
+                 'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s
+                 manifest
+                 encrypted
+                 gzip
+                 delimiter '^' addquotes escape allowoverwrite"""
 
-create_stg_stmt = ("create table amplitude_stg AS (SELECT * FROM amplitude WHERE amplitude_id = 0)")
+create_stg_stmt = "create table amplitude_stg AS (SELECT * FROM amplitude WHERE amplitude_id = 0)"
 
-copy_stmt = ("copy %s.%s "
-             "from '%smanifest' credentials "
-             "region '%s' "
-             "'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s "
-             "manifest "
-             "encrypted "
-             "gzip "
-             "delimiter '^' removequotes escape")
+copy_stmt = """copy %s.%s
+               from '%smanifest' credentials
+               region '%s'
+               'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s
+               manifest
+               encrypted
+               gzip
+               delimiter '^' removequotes escape"""
 
 upsert_stmt = ("INSERT INTO amplitude ("
                "app,amplitude_id,device_id,user_id,event_time,client_event_time,client_upload_time,server_upload_time,event_id,session_id,"
@@ -78,7 +78,7 @@ upsert_stmt = ("INSERT INTO amplitude ("
                "FROM amplitude_stg "
                "WHERE amplitude.amplitude_id not in (SELECT amplitude_id FROM amplitude)")
 
-drop_stg_stmt = ("DROP TABLE amplitude_stg")
+drop_stg_stmt = "DROP TABLE amplitude_stg"
 
 
 def conn_to_rs(host, port, db, usr, pwd, opt=options, timeout=set_timeout_stmt):
