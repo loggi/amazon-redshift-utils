@@ -53,13 +53,13 @@ unload_stmt = ("unload ('SELECT * FROM %s.%s')"
 
 create_stg_stmt = ("create table amplitude_stg AS (SELECT * FROM amplitude WHERE amplitude_id = 0)")
 
-copy_stmt = ("copy %s.%s"
-             "from '%smanifest' credentials"
-             "region '%s'"
-             "'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s"
-             "manifest"
-             "encrypted"
-             "gzip"
+copy_stmt = ("copy %s.%s "
+             "from '%smanifest' credentials "
+             "region '%s' "
+             "'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s "
+             "manifest "
+             "encrypted "
+             "gzip "
              "delimiter '^' removequotes escape")
 
 upsert_stmt = ("INSERT INTO amplitude ("
@@ -68,14 +68,14 @@ upsert_stmt = ("INSERT INTO amplitude ("
                "device_carrier,country,language,revenue,product_id,merged_amplitude_id,quantity,price,location_lat,location_lng,ip_address,"
                "event_properties,user_properties,region,city,dma,device_family,device_type,platform,uuid,paying,start_version,user_creation_time,"
                "library,idfa,adid"
-               ")"
-               "SELECT DISTINCT"
+               ") "
+               "SELECT DISTINCT "
                "app,amplitude_id,device_id,user_id,event_time,client_event_time,client_upload_time,server_upload_time,event_id,session_id,"
                "event_type,amplitude_event_type,first_event,version_name,os_name,os_version,device_brand,device_manufacturer,device_model,"
                "device_carrier,country,language,revenue,product_id,merged_amplitude_id,quantity,price,location_lat,location_lng,ip_address,"
                "event_properties,user_properties,region,city,dma,device_family,device_type,platform,uuid,paying,start_version,user_creation_time,"
-               "library,idfa,adid"
-               "FROM amplitude_stg"
+               "library,idfa,adid "
+               "FROM amplitude_stg "
                "WHERE amplitude.amplitude_id not in (SELECT amplitude_id FROM amplitude)")
 
 drop_stg_stmt = ("DROP TABLE amplitude_stg")
