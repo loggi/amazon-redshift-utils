@@ -100,9 +100,7 @@ def copy_data(conn, aws_access_key_id, aws_secret_key, master_symmetric_key, dat
     #    copy_stmt = copy_stmt + ("\nREGION '%s'" % (dataStagingRegion))
 
     print "Importing %s.%s from %s" % (schema_name, table_name, dataStagingPath + (":%s" % (dataStagingRegion) if dataStagingRegion != None else ""))
-    print copy_stmt % (schema_name, table_name, dataStagingRegion, dataStagingPath, aws_access_key_id, aws_secret_key,
-                            master_symmetric_key)
-    #conn.query(copy_stmt % (schema_name, table_name, dataStagingRegion, dataStagingPath, aws_access_key_id, aws_secret_key,
+    conn.query(copy_stmt % (schema_name, table_name, dataStagingPath, dataStagingRegion, aws_access_key_id, aws_secret_key,
                             master_symmetric_key))
 
 
