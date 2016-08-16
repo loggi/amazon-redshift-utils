@@ -45,18 +45,16 @@ set_timeout_stmt = "set statement_timeout = 1200000"
 
 unload_stmt = """unload ('SELECT * FROM %s.%s')
                  to '%s' credentials
-                 'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s
+                 'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s'
                  manifest
                  encrypted
                  gzip
                  delimiter '^' addquotes escape allowoverwrite"""
 
-create_stg_stmt = "create table amplitude_stg AS (SELECT * FROM amplitude WHERE amplitude_id = 0)"
-
 copy_stmt = """copy %s.%s
                from '%smanifest' credentials
                region '%s'
-               'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s
+               'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s'
                manifest
                encrypted
                gzip
@@ -77,8 +75,6 @@ upsert_stmt = ("INSERT INTO amplitude ("
                "library,idfa,adid "
                "FROM amplitude_stg "
                "WHERE amplitude.amplitude_id not in (SELECT amplitude_id FROM amplitude)")
-
-drop_stg_stmt = "DROP TABLE amplitude_stg"
 
 
 def conn_to_rs(host, port, db, usr, pwd, opt=options, timeout=set_timeout_stmt):
@@ -102,10 +98,10 @@ def copy_data(conn, aws_access_key_id, aws_secret_key, master_symmetric_key, dat
     #    copy_stmt = copy_stmt + ("\nREGION '%s'" % (dataStagingRegion))
 
     print "Importing %s.%s from %s" % (schema_name, table_name, dataStagingPath + (":%s" % (dataStagingRegion) if dataStagingRegion != None else ""))
-    conn.query(create_stg_stmt)
-    conn.query(copy_stmt)
-    conn.query(upsert_stmt)
+    conn.query("create table amplitude_stg as (select * from amplitude where amplitude_id = 0)")
     conn.query(copy_stmt % (schema_name, table_name, dataStagingPath, dataStagingRegion, aws_access_key_id, aws_secret_key, master_symmetric_key))
+    conn.query(upsert_stmt)
+    conn.query("drop table amplitude_stg")
 
 
 def decrypt(b64EncodedValue):
