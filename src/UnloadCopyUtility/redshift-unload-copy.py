@@ -43,13 +43,13 @@ options = """keepalives=1 keepalives_idle=200 keepalives_interval=200
 
 set_timeout_stmt = "set statement_timeout = 1200000"
 
-unload_stmt = ("unload ('SELECT * FROM %s.%s')"
-               "to '%s' credentials"
-               "'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s"
-               "manifest"
-               "encrypted"
-               "gzip"
-               "delimiter '^' addquotes escape allowoverwrite")
+unload_stmt = ("unload ('SELECT * FROM %s.%s') "
+               "to '%s' credentials "
+               "'aws_access_key_id=%s;aws_secret_access_key=%s;master_symmetric_key=%s "
+               "manifest "
+               "encrypted "
+               "gzip "
+               "delimiter '^' addquotes escape allowoverwrite ")
 
 create_stg_stmt = ("create table amplitude_stg AS (SELECT * FROM amplitude WHERE amplitude_id = 0)")
 
